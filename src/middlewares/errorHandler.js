@@ -1,4 +1,6 @@
 const joi = require('joi');
+const sequelize = require('sequelize');
+
 const { HttpError } = require('../../errors');
 
 module.exports = {
@@ -10,6 +12,9 @@ module.exports = {
     console.error(err);
     switch (err.constructor) {
     case joi.ValidationError: {
+      return res.status(400).json({message: err.message});
+    }
+    case sequelize.ValidationError: {
       return res.status(400).json({message: err.message});
     }
     case HttpError: {
