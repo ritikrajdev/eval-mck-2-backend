@@ -28,7 +28,7 @@ module.exports = {
   async getJsonData(url) {
     const res = await axios.get(url);
     if (Math.floor(res.status / 100) !== 2)
-      throw new HttpError(400, `server for compay responded ${res.status}`);
+      throw new HttpError(400, `server for company ${url} responded ${res.status}`);
     return res.data;
   }
 };
