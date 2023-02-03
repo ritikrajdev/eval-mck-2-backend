@@ -10,4 +10,16 @@ module.exports = {
       next(err);
     }
   },
+
+  async patchCompanyById(req, res, next) {
+    try {
+      const {id} = req.params;
+      const {ceo, name} = req.body;
+      const patchedCompany = await companyServices.patchCompayById(id, ceo, name);
+      res.json(patchedCompany);
+    }
+    catch (err) {
+      next(err);
+    }
+  }
 };
