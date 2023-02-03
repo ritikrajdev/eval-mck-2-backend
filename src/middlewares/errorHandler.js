@@ -11,9 +11,8 @@ module.exports = {
     
     console.error(err);
     switch (err.constructor) {
-    case joi.ValidationError: {
-      return res.status(400).json({message: err.message});
-    }
+    case joi.ValidationError:
+    case sequelize.UniqueConstraintError:
     case sequelize.ValidationError: {
       return res.status(400).json({message: err.message});
     }

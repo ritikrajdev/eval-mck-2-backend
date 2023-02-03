@@ -5,7 +5,7 @@ module.exports = {
     try {
       const {urlLink} = req.body;
       const createdData = await csvServices.getCsvAndSaveData(urlLink);
-      res.json(createdData);
+      res.status(201).json(createdData);
     } catch(err) {
       next(err);
     }

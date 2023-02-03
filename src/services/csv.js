@@ -12,9 +12,17 @@ module.exports = {
 
     const sectorAndCompanyData = await getCsvDataFromFile(csvFilePath);
     
-    const companyData = await Promise.all(sectorAndCompanyData.map(({company_id}) => {
-      return getJsonData(`${SERVER_STARTING_URI}/company/${company_id}`);
+    let companyData = await Promise.all(sectorAndCompanyData.map(({company_id}) => {
+      try {
+        return getJsonData(`${SERVER_STARTING_URI}/company/${company_id}`);
+      } catch (err) {
+        if (err.code === 400)
+          return null;
+        else throw err;
+      }
     }));
+    companyData = companyData.fillter(company => company !== null);
+
     const updatedCompanies = {};
     const allUniqueSectorsAsMap = {};
     const invalidCompanyIds = [];
@@ -29,9 +37,17 @@ module.exports = {
     });
 
     const uniqueSectors = Object.keys(allUniqueSectorsAsMap);
-    const performaneIndexData = await Promise.all(uniqueSectors.map(sector => {
-      return getJsonData(`${SERVER_STARTING_URI}/sector?name=${sector}`);
+    let performaneIndexData = await Promise.all(uniqueSectors.map(sector => {
+      try {
+        return getJsonData(`${SERVER_STARTING_URI}/sector?name=${sector}`);
+      }
+      catch (err) {
+        if (err.code === 400)
+          return null;
+        else throw err;
+      }
     }));
+    performaneIndexData = performaneIndexData.filter(data => data !== null);
 
     performaneIndexData.forEach(companies => {
       companies.forEach(company => {

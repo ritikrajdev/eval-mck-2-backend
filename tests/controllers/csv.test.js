@@ -29,6 +29,7 @@ describe('getCsvAndSaveDataController', () => {
     }
   };
   const res = {
+    status: jest.fn().mockReturnThis(),
     json: jest.fn()
   };
   const next = jest.fn();
@@ -37,6 +38,10 @@ describe('getCsvAndSaveDataController', () => {
     
   it('should call getCsvAndSaveData function', () => {
     expect(getCsvAndSaveData).toHaveBeenCalled();
+  });
+
+  it ('should call res.status function with 201', () => {
+    expect(res.status).toHaveBeenCalledWith(201);
   });
     
   it('should call getCsvAndSaveData function with the urlLink from req.body', () => {
