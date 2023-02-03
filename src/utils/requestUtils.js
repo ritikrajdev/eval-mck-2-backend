@@ -10,9 +10,9 @@ module.exports = {
   async getFileFromUrl(fileUrl, filePath) {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(filePath);
-      const http = fileUrl.startsWith('https') ? https : http;
+      const protocol = fileUrl.startsWith('https') ? https : http;
       
-      http.get(fileUrl, function(response) {
+      protocol.get(fileUrl, function(response) {
         response.pipe(file);
         file.on('finish', () => {
           file.close();
