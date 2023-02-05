@@ -9,7 +9,8 @@ module.exports = {
       'attributes': ['id', 'name', 'ceo', 'score']
     });
     return sortedCompaniesByScore.map((company, idx) => {
-      company.dataValues.raking = idx+1;
+      // fix a typo here raking -> ranking
+      company.dataValues.ranking = idx+1;
       return company;
     });
   },
