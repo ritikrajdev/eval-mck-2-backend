@@ -1,6 +1,6 @@
 const { SERVER_STARTING_URI } = require('../../config');
-const { getCsvDataFromFile } = require('../utils/csv');
-const { getFileFromUrl, getJsonData } = require('../utils/requestUtils');
+const csvUtils = require('../utils/csv');
+const requestUtils = require('../utils/requestUtils');
 
 const db = require('../models');
 
@@ -8,20 +8,20 @@ module.exports = {
   async getCsvAndSaveData(csvUrl) {
     const csvFilePath = './raw.csv';
     
-    await getFileFromUrl(csvUrl, csvFilePath);
+    await requestUtils.getFileFromUrl(csvUrl, csvFilePath);
 
-    const sectorAndCompanyData = await getCsvDataFromFile(csvFilePath);
+    const sectorAndCompanyData = await csvUtils.getCsvDataFromFile(csvFilePath);
     
     let companyData = await Promise.all(sectorAndCompanyData.map(({company_id}) => {
       try {
-        return getJsonData(`${SERVER_STARTING_URI}/company/${company_id}`);
+        return requestUtils.getJsonData(`${SERVER_STARTING_URI}/company/${company_id}`);
       } catch (err) {
         if (err.code === 400)
           return null;
         else throw err;
       }
     }));
-    companyData = companyData.fillter(company => company !== null);
+    companyData = companyData.filter(company => company !== null);
 
     const updatedCompanies = {};
     const allUniqueSectorsAsMap = {};
@@ -39,7 +39,7 @@ module.exports = {
     const uniqueSectors = Object.keys(allUniqueSectorsAsMap);
     let performaneIndexData = await Promise.all(uniqueSectors.map(sector => {
       try {
-        return getJsonData(`${SERVER_STARTING_URI}/sector?name=${sector}`);
+        return requestUtils.getJsonData(`${SERVER_STARTING_URI}/sector?name=${sector}`);
       }
       catch (err) {
         if (err.code === 400)
