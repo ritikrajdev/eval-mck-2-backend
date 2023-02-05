@@ -20,7 +20,7 @@ describe('getCsvAndSaveDataController', () => {
     ]
   };
 
-  const getCsvAndSaveData = jest
+  const mockGetCsvAndSaveDataService = jest
     .spyOn(csvServices, 'getCsvAndSaveData').mockResolvedValue(serviceResult);
   
   const req = {
@@ -37,7 +37,7 @@ describe('getCsvAndSaveDataController', () => {
   getCsvAndSaveDataController(req, res, next);
     
   it('should call getCsvAndSaveData function', () => {
-    expect(getCsvAndSaveData).toHaveBeenCalled();
+    expect(mockGetCsvAndSaveDataService).toHaveBeenCalled();
   });
 
   it ('should call res.status function with 201', () => {
@@ -45,10 +45,17 @@ describe('getCsvAndSaveDataController', () => {
   });
     
   it('should call getCsvAndSaveData function with the urlLink from req.body', () => {
-    expect(getCsvAndSaveData).toHaveBeenCalledWith(req.body.urlLink);
+    expect(mockGetCsvAndSaveDataService).toHaveBeenCalledWith(req.body.urlLink);
   });
     
   it('should call res.json function', () => {
     expect(res.json).toHaveBeenCalled();
+  });
+
+  it('should call next on error', async () => {
+    const error = new Error('error');
+    mockGetCsvAndSaveDataService.mockRejectedValue(error);
+    await getCsvAndSaveDataController(req, res, next);
+    expect(next).toHaveBeenCalledWith(error);
   });
 });
